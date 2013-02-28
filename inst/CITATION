@@ -1,0 +1,19 @@
+citHeader("To cite package 'flowPhyto' in publications use:") 
+desc <- packageDescription("flowPhyto") 
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", desc$Date) 
+vers <- paste("R package version", desc$Version) 
+title <- desc$Title 
+authDave <- "David Schruth"
+authAdr <- "Francois Ribalet"
+
+citEntry(entry="Manual", 
+	title = title,  
+	author = personList(
+			as.person(authDave), 	
+			as.person(authAdr)),
+	year = year, 
+	note = vers, 
+	textVersion = paste(authDave,' & ', authAdr," (", year, "). ", title,". ", vers ,'.', sep=""))
+
+
+

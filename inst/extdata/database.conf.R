@@ -1,0 +1,9 @@
+.db.driver <- "PostgreSQL"
+.db.user <- "yourusername"
+.db.pass <- "yourpassword"
+.db.name <- "yourdatabase"
+.db.host <- "yourhostname"
+.db.stats.tab.nm <- 'seaflow_statistic'
+.db.cruise.fkey.nm <- 'trip_id'
+.db.cruise.tab.nm <- 'seaflow_trip'
+.db.sds.tab.nm <- 'seaflow_sds'
