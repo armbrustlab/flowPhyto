@@ -60,19 +60,11 @@ filter <- function(events, width=1, notch=1, slope=NULL, edge=1, do.plot=FALSE){
    plot(filtered$fsc_small, filtered$pe, xlab="fsc_small", ylab="pe", 
     		pch=20, cex=0.25, xlim=c(0,2^16), ylim=c(0,2^16),
 			col= densCols(filtered$fsc_small, filtered$pe, colramp=.rainbow.cols),
-<<<<<<< HEAD
-			main="Optimally Positioned Particles", pty='s')
-   plot(filtered$fsc_small, filtered$chl_small, xlab="fsc_small", ylab="chl_small", 
-    		pch=20, cex=0.25, xlim=c(0,2^16), ylim=c(0,2^16),
-			col= densCols(filtered$fsc_small, filtered$chl_small, colramp=.rainbow.cols),
-			main="Optimally Positioned Particles", pty='s')
-=======
 			main=paste("Optimally Positioned Particles\n (",percent.opp,"% total events)"))
    plot(filtered$fsc_small, filtered$chl_small, xlab="fsc_small", ylab="chl_small", 
     		pch=20, cex=0.25, xlim=c(0,2^16), ylim=c(0,2^16),
 			col= densCols(filtered$fsc_small, filtered$chl_small, colramp=.rainbow.cols),
 			main=paste("Optimally Positioned Particles\n (",percent.opp,"% total events)"))
->>>>>>> new 'filter' function
 
   }
   
