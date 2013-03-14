@@ -1,10 +1,10 @@
 Package: flowPhyto
-Version: 2.1
-Date: 2013-02-05
+Version: 2.2
+Date: 2013-03-14
 Title: Methods for Continuous Flow Cytometry
 Author: Francois Ribalet <ribalet@u.washington.edu> and David M. Schruth <dschruth@u.washington.edu>
 Maintainer: Francois Ribalet <ribalet@u.washington.edu>
-Depends: R (>= 2.15.1)
+Depends: R (>= 2.15.3)
 Imports: caroline, flowCore, flowMeans, IDPmisc
 Suggests: RPostgreSQL, zoo, maps, mapdata, plotrix, TTR
 Description: Automated Analysis of Continuous Flow Cytometry Data.
