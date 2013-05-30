@@ -48,9 +48,9 @@ readSeaflow <- function(file.path, column.names = EVT.HEADER, column.size = 2, c
       }
       
       
-      ## filter out events that have exactly mid range values for all channels   (this is temporary)
-      is.legit <- apply(integer.dataframe, 1, function(x)  !all(x[c('D1','D2',CHANNEL.CLMNS)] == 2^15))
-      integer.dataframe <- subset(integer.dataframe, is.legit)
+      # ## filter out events that have exactly mid range values for all channels   (this is temporary)
+      # is.legit <- apply(integer.dataframe, 1, function(x)  !all(x[c('D1','D2',CHANNEL.CLMNS)] == 2^15))
+      # integer.dataframe <- subset(integer.dataframe, is.legit)
       
     # if(count.only){
        # return(nrow(integer.dataframe)) # temporary until we go back and clean up the original files

@@ -5,7 +5,7 @@
 The function normalizes the signals of the two position-sensitive detectors (D1 and D2) by the forward angle light scatter (fsc_small) signal to identify optimally positioned particles (OPP) from an EVT file
 }
 \usage{
-filterFile(evt.path, width=1, notch=1, slope=NULL, edge=1, map.margin=2, output.path=getCruisePath(evt.path))
+filterFile(evt.path, width=1, notch=1, slope=NULL, edge=1, output.path=getCruisePath(evt.path))
 
 }
 \arguments{
@@ -15,7 +15,6 @@ filterFile(evt.path, width=1, notch=1, slope=NULL, edge=1, map.margin=2, output.
 \item{notch}{the correction factor for the sensitivity of FSC with respect to D1 and D2. Scattered light from focused particles is maximal at the forward scatter detector (FSC) and minimal at both position detectors. When the sensitivity of FSC and D1/D2 detectors is adjusted to respond equally to focused calibration particles, the FSC normalized by the signal of both position detectors must be lower than 1.} 
 \item{edge}{location of the boundary layer between water/air. Particles located at the boundary layer scatter light that can be detected by the position detectors.}
 \item{output.path}{path to the directory where you wish to output OPP file.}
-\item{map.margin}{margin in latitude/longitude around the map plots.}
 }
 
 \value{

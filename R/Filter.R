@@ -1,24 +1,24 @@
 ##### NEW FUNCTION !!! ####
 
-filter <- function(events, width=1, notch=1, slope=NULL, edge=1, do.plot=FALSE){
+filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
   notch <- as.numeric(notch)
   width<- as.numeric(width)
   edge <- as.numeric(edge)
+  slope <- as.numeric(slope)
    
    ##### FILTRING OPP #####
   		detected <- subset(events, D1 > 2^4 & D2 > 2^4) # filtering particles not detected by D1 or D2
   		unsaturated <- subset(detected, D1 < max(events[,"D1"]) & D2 < max(events[,"D1"])) # filtering particles with saturated signals on D1 or D2
   		inside.stream <- subset(unsaturated,D2 < -D1 + edge*2^16*2) # filtering particles at the boundary layer between water/air
 		
-		if(is.null(slope)){
+		if(is.na(slope)){
 		  # quart1 <- subset(inside.stream, D1 > as.numeric(quantile(inside.stream[,"D1"], probs= 0.9)))
 		  # quart2 <- subset(inside.stream, D2 > as.numeric(quantile(inside.stream[,"D2"], probs= 0.9)))
 		  # slope <- mean(quart2[,"D2"])/mean(quart1[,"D1"]) # the correction factor for the sensitivity of D1 with respect to D2.			
 		  slope.inside.stream <- subset(inside.stream, D1 > 10000 & D2 > 10000) # Exclude potenital electrical noise from calculation.	
 		  slope <- mean(slope.inside.stream$D2/slope.inside.stream$D1) 		
 			}  
-  		a
-  		ligned <- subset(inside.stream, D2 > (slope*D1 - width * 10^4) & D2 < (slope*D1 + width*10^4)) # filtering aligned particles (D1 = D2)
+  		aligned <- subset(inside.stream, D2 > (slope*D1 - width * 10^4) & D2 < (slope*D1 + width*10^4)) # filtering aligned particles (D1 = D2)
   		focused <- subset(aligned, D2/fsc_small > (slope*D1/fsc_small - notch) & D2/fsc_small < (slope*D1/fsc_small + notch))# filtering focused particles (D1/fsc_small = D2/fsc_small)
   		filtered <- subset(focused, D1/fsc_small < notch/slope | D2/fsc_small < notch*slope) # filtering focused particles (D/fsc_small < notch)
   
@@ -75,7 +75,7 @@ filter <- function(events, width=1, notch=1, slope=NULL, edge=1, do.plot=FALSE){
 
 
 
-filterFile <- function(evt.path, width=1, notch=1, slope=NULL, edge=1, map.margin=2, output.path=getCruisePath(evt.path)){
+filterFile <- function(evt.path, width=1, notch=1, slope=NA, edge=1, output.path=getCruisePath(evt.path)){
 
   path.pieces <- strsplit(evt.path,'/')
   year_day <- path.pieces[[1]][length(path.pieces[[1]])-1]
@@ -97,7 +97,7 @@ filterFile <- function(evt.path, width=1, notch=1, slope=NULL, edge=1, map.margi
   #par(mar=c(5,5,2,1),oma=c(1,1,1,1),pty='m')
   # plot(1,1,pch='',xlab='',ylab='',xaxt='n',yaxt='n',bty='n')  # TITLE of QUALITY CONTROL PLOt
   
-  filter.frame <- filter(my.flow.frame, width=width, notch=notch, edge=edge, do.plot=TRUE)
+  filter.frame <- filter(my.flow.frame, width=width, notch=notch, edge=edge, slope=slope, do.plot=TRUE)
   n <- nrow(filter.frame)
   message(paste(n, 'events found'))  
 
