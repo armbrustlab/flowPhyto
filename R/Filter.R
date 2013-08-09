@@ -16,7 +16,7 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
 		  # quart2 <- subset(inside.stream, D2 > as.numeric(quantile(inside.stream[,"D2"], probs= 0.9)))
 		  # slope <- mean(quart2[,"D2"])/mean(quart1[,"D1"]) # the correction factor for the sensitivity of D1 with respect to D2.			
 		  slope.inside.stream <- subset(inside.stream, D1 > 10000 & D2 > 10000) # Exclude potenital electrical noise from calculation.	
-		  slope <- mean(slope.inside.stream$D2/slope.inside.stream$D1) 		
+		  slope <- median(slope.inside.stream$D2)/median(slope.inside.stream$D1) 		
 			}  
   		aligned <- subset(inside.stream, D2 > (slope*D1 - width * 10^4) & D2 < (slope*D1 + width*10^4)) # filtering aligned particles (D1 = D2)
   		focused <- subset(aligned, D2/fsc_small > (slope*D1/fsc_small - notch) & D2/fsc_small < (slope*D1/fsc_small + notch))# filtering focused particles (D1/fsc_small = D2/fsc_small)
