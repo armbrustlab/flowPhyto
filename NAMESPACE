@@ -1,4 +1,3 @@
-importFrom(caroline, pad, tab2df, nv, write.delim, dbWriteTable2);
 importFrom(flowMeans, flowMeans, changepointDetection, plot);
 import(flowCore);
 import(IDPmisc);

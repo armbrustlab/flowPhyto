@@ -4,9 +4,7 @@
 
 classify <- function(x, pop.def=POP.DEF, varnames = CHANNEL.CLMNS.SM, numc=0, noise=0, auto.correction= FALSE, plot.cluster = FALSE, plot.assignment = FALSE, try.context='local',...){
   
-  	 
-    #require(flowMeans)
-    
+  	    
     x$pop <- 0
     undefd <- subset(x, x$chl_small > as.numeric(noise))
     
@@ -229,7 +227,7 @@ classifyFile <- function(opp.path, concat.ct=3, output.path=getCruisePath(opp.pa
 ## Plot output Classify function ##
 ###################################
 
-plotCytogram <- function(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=1, xlab=x.ax, ylab=y.ax, ...){
+plotCytogram <- function(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=16, xlab=x.ax, ylab=y.ax, ...){
       
     plot(df[, x.ax], df[, y.ax], col='grey', pch=pch, cex=cex, xlim=c(0,2^16), ylim=c(0,2^16), xlab=xlab, ylab=ylab, ...)
 
@@ -238,12 +236,9 @@ plotCytogram <- function(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=
         df.p <- subset(df, pop==p)
         #print(paste('plotting population',p,':',nrow(df.p),'cells'))
         if(nrow(df.p)>2){
-          try(points(df.p[,x.ax], df.p[, y.ax],
- 	         col = densCols(df.p[,x.ax], df.p[,y.ax], 
-  	         col=colorRampPalette(c(
-  	         hsv(h=rgb2hsv(col2rgb(pop.def[p,]$color))['h',], s=.05, v=.88), pop.def[p,]$color))), 
-   	         pch=pch, cex=cex))
-        }
+ #         try(points(df.p[,x.ax], df.p[, y.ax], col = densCols(df.p[,x.ax], df.p[,y.ax], col=colorRampPalette(c(hsv(h=rgb2hsv(col2rgb(pop.def[p,]$color))['h',], s=.05, v=.88), pop.def[p,]$color))), pch=pch, cex=cex))
+        try(points(df.p[,x.ax], df.p[, y.ax], col = pop.def[p,]$color, pch=pch, cex=cex))
+       }
       }
       if(add.legend){  
         legend('bottomright', legend=pop.def$title, pch=16, col=pop.def$color, bty='n')

@@ -7,7 +7,7 @@ plotStatMap <- function(df, pop, z.param, margin=0.1, zlab=z.param, ma=1, xlim=N
 	}
 	z <- df.pop[,z.param] 
 	z <- z[is.finite(z)]
-	try(z <- runMean(z, n = ma), silent=TRUE)
+	try(z <- rollmean(z, k = ma), silent=TRUE)
 	w <- na.exclude(z)
 		if(is.na(ma)){
 		z <- smooth.spline(z, df = length(unique(z)))
@@ -39,7 +39,7 @@ plotStatMap <- function(df, pop, z.param, margin=0.1, zlab=z.param, ma=1, xlim=N
   return(ret)
 }
 
-plotLatLongMap <- function(lat, long, track=NULL, margin=1, col='red', legend=NULL, pch=20, cex=1.5, lwd=1, lty=2, zlab=NA, xlim=NULL, ylim=NULL, xlab="Longitude (deg W)",ylab="Latitude (degN)",...){
+plotLatLongMap <- function(lat, long, track=NULL, margin=2, col='red', legend=NULL, pch=20, cex=1.5, lwd=1, lty=2, xlim=NULL, ylim=NULL, xlab="Longitude (deg W)",ylab="Latitude (deg N)",zlab=NA, ...){
   ## plot longitude and latitude on a map
   require(maps, quietly=T)
   require(mapdata, quietly=T)
@@ -75,7 +75,7 @@ plotLatLongMap <- function(lat, long, track=NULL, margin=1, col='red', legend=NU
     ylim <- par('usr')[c(3,4)]
     xlim <- par('usr')[c(1,2)]
 
-    color.legend(xlim[2]- diff(xlim)/(margin*20) , ylim[1], xlim[2], ylim[2], 
+    color.legend(xlim[2], ylim[1], xlim[2] + diff(xlim)/40, ylim[2], 
     	legend=legend, rect.col=.rainbow.cols(100), gradient='y',align='rb',cex=cex,...)
 	mtext(zlab, side=4, line=3,cex=cex)  
 

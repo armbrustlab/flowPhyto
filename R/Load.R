@@ -93,4 +93,7 @@ writeSeaflow <- function(file.path, df, column.names = EVT.HEADER){
 
 
 
+write.delim <- function(df, file, quote=FALSE, row.names=FALSE, sep='\t', ...){
+	write.table(df, file,  quote=quote, row.names=row.names, sep=sep, ...)
+}
 

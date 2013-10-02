@@ -1,16 +1,62 @@
-    
+.tab2df <- function(x,...){
+
+  is.tabrix <- class(x)[1] %in% c('table','matrix')
+  row.nms <- rownames(x)
+  
+  if(NCOL(x)>1){
+    clm.nms <- colnames(x)
+    if(is.tabrix)
+      x <- lapply(clm.nms, function(i) x[,i]) 
+  }else{                                      
+    if(is.tabrix){ # single column but matrix output
+      clm.nms <- row.nms  # assume we want a 2 clmn dataframe
+      row.nms <- NULL
+    }else{   # vectors
+      clm.nms <- NULL
+      if(!is.null(names(x))) #named vector
+        row.nms <- names(x) 
+      else    # unnamed vector
+        row.nms <- 1:length(x)
+    }
+  }
+  
+  if(!is.null(clm.nms)){
+    x <- as.list(x)
+    names(x) <- clm.nms
+  }
+  df <- data.frame(x,...)
+  rownames(df) <- row.nms
+  return(df)
+  
+}
+
+.nv <- function(x, name){
+
+  if(class(x)=='data.frame'){
+    v <- x[,name[1]]
+    if(length(name)==2)
+      names(v) <- x[,name[2]]
+    else
+      names(v) <- rownames(x)
+  }else{
+    v <- as.vector(x)
+    names(v) <- name
+  }
+  v
+}
+   
 .getSDS <- function(file.path){
   ## grab one line of the SDS file based on the particular event file you are processing
   
   file.number <- getFileNumber(file.path) 
   
   dir.path <- dirname(file.path)
+  sds.file <- list.files(dir.path, pattern='.txt')
   path.vect <- strsplit(dir.path ,'/')[[1]]
   dir.name <- path.vect[length(path.vect)]
-
   sds.name <- paste('sds_', dir.name,sep='')
-  sds.file <- paste(dir.path, '/', sds.name, '.txt', sep='')
-  sds <- try(read.delim(sds.file))
+
+  sds <- try(read.delim(paste(dir.path,"/",sds.file,sep="")))
   if(class(sds) != 'try-error'){
     line <- sds[sds$FILE == paste(sds.name, '_', file.number, sep=''),]
     ndf <- nrow(line)
@@ -55,7 +101,7 @@
 }
 
 
-.dms2decideg <- function(posv=nv(c('3647.001','12154.04'),c('lat','long')), dirv=nv(c('N','W'),c('ns','ew'))){
+.dms2decideg <- function(posv=.nv(c('3647.001','12154.04'),c('lat','long')), dirv=.nv(c('N','W'),c('ns','ew'))){
 
   ## find the decimal place -2 seperator & then split the string into degrees and seconds
   posv.div <- sapply(posv, function(x) gregexpr('\\.', x)[[1]]-2)
@@ -127,7 +173,7 @@
 
   lat.lon <- t(sapply(1:nrow(sds), function(x) .getSDSlatlon(sds[x,])))
   colnames(lat.lon)<- c('lat','long')
-  lat.lon.df <- tab2df(lat.lon)
+  lat.lon.df <- .tab2df(lat.lon)
   lat.lon.df <- subset(lat.lon.df , !apply(lat.lon.df,1,function(x) any(is.na(x))) )
   return(lat.lon.df)
 }
@@ -159,7 +205,7 @@ combineSdsFiles <- function(cruise.dir='.'){
   sds$OCEAN.TEMP[sds$OCEAN.TEMP==''] <- NA
   sds$FLOW.METER[sds$FLOW.METER == 'nometer'] <- -1
   # convert Inf values to -1 ...  probably need more of these
-  sds$EVENT.RATE <- sapply(sds$EVENT.RATE, function(x) x[is.infinite(x)] <- -1)
+  sds$EVENT.RATE[is.infinite(sds$EVENT.RATE)] <- -1
 
   sds <- subset(sds, !is.na(time))
   return(sds)
@@ -184,7 +230,7 @@ combineSdsFiles <- function(cruise.dir='.'){
     tmp <- read.delim(as.character(pp), stringsAsFactors=F)
     ##tmp <- subset(tmp, !is.na(FILE) & computerUTC  != 'E')
     ##tpp <- sapply(tmp[,c('LAT','LON')], as.character)
-    ##mtp <- t(sapply(1:nrow(tpp),function(x) .dms2decideg(nv(tpp[x,] ,c('lat','long')))))
+    ##mtp <- t(sapply(1:nrow(tpp),function(x) .dms2decideg(.nv(tpp[x,] ,c('lat','long')))))
     ##tmp$LAT <- mtp[,1]
     ##tmp$LON <- mtp[,2]
     tmp
@@ -201,7 +247,7 @@ combineSdsFiles <- function(cruise.dir='.'){
 joinSDS <- function(x, opp.paths){
 
   if(is.null(names(opp.paths)))
-    names(opp.paths) <- nv(opp.paths, unique(x$file))
+    names(opp.paths) <- .nv(opp.paths, unique(x$file))
   sds.line <- .getSDS(opp.paths[as.character(x$file[1])])  #depends on .getNextFiles naming its output vector
   if(is.null(sds.line)){  # null SDS lines due to the ship's data stream going off line
     lat.lon <- c(NA,NA) 

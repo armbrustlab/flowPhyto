@@ -7,7 +7,7 @@ run the pipeline
 \usage{
 pipeline(cruise.name='', repo=REPO.PATH, range=NULL, steps=1:4, pct=.97,  
 	clust.concat.ct=3, resample.size=300, resamp.concat.max=10,
-	 filter.width=1.5, filter.notch=1, filter.slope=NULL, filter.edge=1, 
+	 filter.width=1.5, filter.notch=1,  filter.edge=1, filter.slope=NA,
 	 classify.func =2, classify.varnames=CHANNEL.CLMNS.SM, classify.numc=0, classify.noise=0,
 	 map.margin=2, 
 	concat.sds=!is.na(match(1,steps)), load.to.db=FALSE,  preplot=FALSE, cleanup=TRUE,

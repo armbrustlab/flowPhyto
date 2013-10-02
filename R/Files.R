@@ -1,3 +1,11 @@
+.pad <- function(vect,np){
+ x <- as.numeric(vect)
+ vect <- as.character(vect)
+ for(p in 10^(1:np)){
+   vect[x<p] <- paste("0",vect[x<p],sep="")
+ }
+ vect
+}
 
 .getYearDay <- function(file.path){
   
@@ -46,7 +54,7 @@
   
   if(day > 365 | day < 1)
     stop('day is out of 1 to 365 julian day range')
-  new.year.day <- paste(year, '_', pad(day,2), sep='')
+  new.year.day <- paste(year, '_', .pad(day,2), sep='')
   return(paste(pre.path, new.year.day,'/', file.name, sep=''))
   
 }

@@ -5,7 +5,7 @@
 plot the location of the file (longitude and latitude) on a map
 }
 \usage{
-plotLatLongMap(lat, long, track=NULL, margin=0.1, col='red', legend=NULL, pch=20, cex=1.5, lwd=1, lty=2, xlim=NULL, ylim=NULL, zlab=NA, xlab="Longitude (deg W)",ylab="Latitude (deg N)",...)
+plotLatLongMap(lat, long, track=NULL, margin=2, col='red', legend=NULL, pch=20, cex=1.5, lwd=1, lty=2, xlim=NULL, ylim=NULL, xlab="Longitude (deg W)",ylab="Latitude (deg N)",zlab=NA, ...)
 }
 \arguments{
 \item{lat}{vector of latitudes.}
@@ -18,11 +18,11 @@ plotLatLongMap(lat, long, track=NULL, margin=0.1, col='red', legend=NULL, pch=20
 \item{cex}{character expansion}
 \item{lwd}{line width}
 \item{lty}{line type}
-\item{xlim}{limit of x axis}
-\item{ylim}{limit of y axis}
 \item{zlab}{the label for the values of the heatmap color gradient passed as 'col'}
 \item{xlab}{the x-axis label}
 \item{ylab}{the y-axis label}
+\item{xlim}{limit of x axis}
+\item{ylim}{limit of y axis}
 \item{...}{additional arguments to be passed to the plot function}
 }
 

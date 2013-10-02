@@ -5,7 +5,7 @@
 Plot a Phytoplankton Cytogram
 }
 \usage{
-plotCytogram(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=1, xlab = x.ax, ylab = y.ax, ...)
+plotCytogram(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=16, xlab = x.ax, ylab = y.ax, ...)
 }
 
 \arguments{

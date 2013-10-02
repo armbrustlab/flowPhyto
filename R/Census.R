@@ -179,7 +179,7 @@ readConsensusFile <- function(path){
   rfctr <- lapply(rsl, function(r) by(names(r), r, function(y) paste(y, collapse=',')))
   reduct <- list()
   for(pop in names(rfctr))
-    reduct[[pop]] <- nv(rep(pop,length(rfctr[[pop]])), rfctr[[pop]])
+    reduct[[pop]] <- .nv(rep(pop,length(rfctr[[pop]])), rfctr[[pop]])
   flat <- unlist(reduct)
   resamp.fact <- sapply(strsplit(names(flat), '\\.'), '[', 2)
   return(
