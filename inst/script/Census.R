@@ -1,5 +1,5 @@
+library(flowPhyto, quietly=T)
 
-library(caroline)
 cmdArgsToVariables() 
 
 if(exists('opp.path')){ 

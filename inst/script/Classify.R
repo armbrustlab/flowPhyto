@@ -1,9 +1,8 @@
-library(caroline, quietly=T)
+library(flowPhyto, quietly=T)
+
 cmdArgsToVariables() 
 
 if(exists('opp.path')){ 
-
-  library(flowPhyto, quietly=T)
 
   varnames <- parseArgString(varnames, max.param.ct=32, param.range=CHANNEL.CLMNS)
   

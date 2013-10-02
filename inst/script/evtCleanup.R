@@ -1,9 +1,4 @@
-
-
 library(flowPhyto, quietly=T)
-
-
-library(caroline, quietly=T)
 
 cmdArgsToVariables()
 

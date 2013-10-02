@@ -1,6 +1,7 @@
+library(flowPhyto, quietly=T)
 
-library(caroline, quietly=T)
 sds.var = NULL
+
 cmdArgsToVariables() 
 
 if(exists('cruise')){ 
