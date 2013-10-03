@@ -4,7 +4,7 @@ Date: 2013-10-02
 Title: Methods for Continuous Flow Cytometry
 Author: Francois Ribalet <ribalet@uw.edu> and Chris Berthiaume <chrisbee@uw.edu>
 Maintainer: Francois Ribalet <ribalet@u.washington.edu>
-Depends: R (>= 2.15.3)
+Depends: R (>= 3.0.0)
 Imports: flowCore, flowMeans, IDPmisc
 Suggests: RPostgreSQL, zoo, maps, mapdata, plotrix
 Description: Automated Analysis of Continuous Flow Cytometry Data.
@@ -12,4 +12,4 @@ biocViews: FlowCytometry, DataImport, QualityControl, Classification,
         Bioinformatics, Visualization, Clustering
 License: Artistic-2.0
 URL: http://seaflow.ocean.washington.edu
-Packaged: 2013-02-05 19:05:04 UTC; francois
+Packaged: 2013-10-03 19:54:23 UTC; francois

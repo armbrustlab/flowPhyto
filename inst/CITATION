@@ -3,17 +3,17 @@ desc <- packageDescription("flowPhyto")
 year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", desc$Date) 
 vers <- paste("R package version", desc$Version) 
 title <- desc$Title 
-authDave <- "David Schruth"
-authAdr <- "Francois Ribalet"
+authF <- "Francois Ribalet"
+authC <- "Chris Berthiaume"
 
 citEntry(entry="Manual", 
 	title = title,  
 	author = personList(
-			as.person(authDave), 	
-			as.person(authAdr)),
+			as.person(authF), 	
+			as.person(authC)),
 	year = year, 
 	note = vers, 
-	textVersion = paste(authDave,' & ', authAdr," (", year, "). ", title,". ", vers ,'.', sep=""))
+	textVersion = paste(authF,' & ', authC," (", year, "). ", title,". ", vers ,'.', sep=""))
 
 
 
