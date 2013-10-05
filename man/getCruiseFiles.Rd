@@ -5,7 +5,7 @@
 This is a convenience function to grab all of the raw data files from the all of the julian day sub directories in a seaflow cruise directory.
 }
 \usage{
-getCruiseFiles(cruise.dir='.', prefix='[0-9]{1,9}', ext='\\\\.evt', range=NULL)
+getCruiseFiles(cruise.dir='.', prefix='[0-9]{1,3}', ext='\\\\.evt', range=NULL)
 }
 \arguments{
 \item{cruise.dir}{Path to cruise.}
