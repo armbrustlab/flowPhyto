@@ -2,17 +2,18 @@
 \alias{censusFile}
 \title{Create a consensus from several classification vector files and cross tabulate the population composition}
 \description{
-Create a consensus from several classification vectors and cross tabulate the population composition
+Create a consensus from several classification vectors, cross tabulate the population composition and save an image of the cytograms
 }
 \usage{
 censusFile(opp.path, map.margin=2, output.path=getCruisePath(opp.path), 
-		def.path=paste(getCruisePath(opp.path),'pop.def.tab',sep=''))
+		def.path=paste(getCruisePath(opp.path),'pop.def.tab',sep=''), transform=TRUE)
 }
 \arguments{
 \item{opp.path}{Path to OPP event file.}
 \item{map.margin}{Margin in latitude/longitude around the map plots.}
 \item{output.path}{Path to the directory where you wish to output data.}
 \item{def.path}{Path to the file that defines how to gate & cluster the events into populations.}
+\item{transform}{To save the cytograms as log-transformed data}
 }
 \value{
 a one dimentional consensus vector file (one column) 

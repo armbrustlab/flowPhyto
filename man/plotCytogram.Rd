@@ -5,7 +5,7 @@
 Plot a Phytoplankton Cytogram
 }
 \usage{
-plotCytogram(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=16, xlab = x.ax, ylab = y.ax, ...)
+plotCytogram(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, transform=TRUE, cex=0.5, pch=16, xlab = x.ax, ylab = y.ax, ...)
 }
 
 \arguments{
@@ -14,6 +14,7 @@ plotCytogram(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=16,
 \item{y.ax}{column to plot in the y.axis}
 \item{add.legend}{should the plot automatically generate a legend}
 \item{pop.def}{A population (rows) definition dataframe with parameters (columns) for gating and clustersing.}
+\item{transform}{plot Log transform data, if appropriate}
 \item{cex}{character expansion for the points.  Undefined background points are 1/3rd of the foreground points.}
 \item{pch}{point character}
 \item{xlab}{label for the x axis. by default equals x.ax}

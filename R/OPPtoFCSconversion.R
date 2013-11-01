@@ -1,10 +1,3 @@
-.DecadeCorrection <-  function(x){
-	t <- 10^((x/2^16)*3.5)
-	return(t)
-	}
-	
-	
-	
 .collapseDesc <- function (x){
     d <- description(x)
     d <- lapply(d, function(y) {
@@ -32,8 +25,7 @@
 }
 
 
-.writeFCSheader <- function(con, offsets)
-{
+.writeFCSheader <- function(con, offsets){
     seek(con, 0)
     writeChar("FCS3.0    ", con, eos=NULL)
     len <- length(offsets)/2
@@ -56,7 +48,8 @@
 
 OPPtoFCSconversion <- function(opp.filelist, save.path = getCruisePath(opp.filelist),...){
 
-	
+	require("flowPhyto")
+	require("flowCore")
 	cruise <- basename(getCruisePath(opp.filelist))
 
 	system(paste("mkdir ", save.path,cruise,"/",sep=""))
@@ -64,27 +57,35 @@ OPPtoFCSconversion <- function(opp.filelist, save.path = getCruisePath(opp.filel
 	for(d in days) system(paste("mkdir ", save.path, cruise,"/",d,sep=""))
 
 	for(opp.file in opp.filelist){
-		
+
+		## READ OPP file
+		opp <- readSeaflow(opp.file, transform=F, add.yearday.file=TRUE) 
+	
+		## OMIT PULSE WIDTH, D1 and D2
+		cleaned.opp <- opp[,c(1,5:10)] 
+	
+		## CREATE A FLOWFRAME	
+		x <- flowFrame(as.matrix(cleaned.opp))
 		
 		## DESCRIPTION
 		year.day <- flowPhyto:::.getYearDay(opp.file)
 		filename <- basename(opp.file)
 		filenumber <- getFileNumber(opp.file)
-		acquisition <- file.info(opp.file)$mtime
+		total.event <- readSeaflow(sub('.opp','',opp.file), count.only=TRUE)
 		last.modif <- file.info(opp.file)$ctime
 		fcs.filename <- paste(cruise,".",year.day,".",filenumber,sep="")
+	
+		opp.join <- joinSDS(opp, flowPhyto:::.nv(opp.filelist,sapply(opp.filelist,getFileNumber)))
+		lat <- mean(opp.join$lat, na.rm=T)
+		long <- mean(opp.join$long, na.rm=T)
+		temp <- mean(opp.join$temperature, na.rm=T)
+		sal <- mean(opp.join$salinity, na.rm=T)
+		fluo <- mean(opp.join$fluorescence, na.rm=T)
+		red <- mean(opp.join$bulk.red, na.rm=T)
+		flow.rate <- mean(opp.join$flow.rate, na.rm=T)
+		event.rate <- mean(opp.join$event.rate, na.rm=T)
+		acquisition <- unique(opp.join$time.UTC, na.rm=T)
 		
-		## READ OPP file
-		opp <- readSeaflow(opp.file) 
-		
-		## GET RIDE OF PULSE WIDTH, D1 and D2	
-		cleaned.opp <- opp[,c(1,5:10)] 
-		
-		## TRANFORM THE DATA 
-		#cleaned.opp[,-1] <- .DecadeCorrection(cleaned.opp[,-1])
-
-		## CREATE A FLOWFRAME	
-		x <- flowFrame(as.matrix(cleaned.opp))
 		
 		## ANNOTATE		
 		begTxt <- 58
@@ -119,15 +120,25 @@ OPPtoFCSconversion <- function(opp.filelist, save.path = getCruisePath(opp.filel
     
     	description(x) <- mk
     	
-    	description(x) <- list( '$FCSversion'="3.0",
-    							'$CYT'="SeaFlow",
+    	description(x) <- list( '$CYT'="SeaFlow",
+ 								'$INST'="University of Washington",
+								'$LAB'="Armbrust Lab",
+								'$FIL'=fcs.filename,
  								'$CRUISE'=cruise, 
 								'$YEARDAY'=year.day,
-								'$DATE'= acquisition,
-								'$LAST_MODIFIED'=last.modif,
-								'$INST'="University of Washington",
-								'$LAB'="Armbrust Lab",
-								'$FIL'=fcs.filename)
+								'$TIME.UTC'= acquisition,
+	   							'$LATITUDE'=lat,
+	   							'$LONGITUDE'=long,
+	   							'$TEMP'=temp,
+	   							'$SALINITY'=sal,
+	   							'$CHLOROPHYLL'=fluo,
+	   							'$BULK_RED'=red,
+	   							'$FLOW.RATE'=flow.rate,
+	   							'$EVENT.RATE'=event.rate,
+    							'$ACQUISITION.TIME'=3,
+	   							'$TOTAL.EVT'=total.event,
+    							'$LAST_MODIFIED'=last.modif,
+								'$FCSversion'="3.0")
 								
     	identifier(x) <- fcs.filename
     	
@@ -140,15 +151,17 @@ OPPtoFCSconversion <- function(opp.filelist, save.path = getCruisePath(opp.filel
     	description(x) <- list(`$BEGINDATA` = endTxt + 1, `$ENDDATA` = endTxt +  ld)
     	ctxt <- .collapseDesc(x)
     	offsets <- c(begTxt, endTxt, endTxt + 1, endTxt + ld, 0, 0)
-    	con <- file(paste(save.path,cruise,"/",year.day, "/", filenumber,".fcs",sep=""), open = "wb")
+    	con <- file(paste(save.path,cruise,"/",year.day, "/", fcs.filename,".fcs",sep=""), open = "wb")
    		on.exit(close(con))
     	.writeFCSheader(con, offsets)
     	writeChar(ctxt, con, eos = NULL)
     	writeBin(as(t(exprs(x)), "integer"), con, size = 2, endian = 'little')
     	writeChar("00000000", con, eos = NULL)
-		print(fcs.filename)
+		print(paste(fcs.filename,".fcs",sep=""))
+		
+
 	}
 
 return(x)
-	
+
 }

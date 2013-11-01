@@ -6,6 +6,9 @@ classify <- function(x, pop.def=POP.DEF, varnames = CHANNEL.CLMNS.SM, numc=0, no
   
   	    
     x$pop <- 0
+    
+    if(all(max(x[,CHANNEL.CLMNS.SM]) <= 10^3.5)) x[,CHANNEL.CLMNS.SM] <- (log10(x[,CHANNEL.CLMNS.SM])/3.5)*2^16 # linearize the LOG transformed data
+    
     undefd <- subset(x, x$chl_small > as.numeric(noise))
     
 	if(is.na(numc)){
@@ -227,10 +230,13 @@ classifyFile <- function(opp.path, concat.ct=3, output.path=getCruisePath(opp.pa
 ## Plot output Classify function ##
 ###################################
 
-plotCytogram <- function(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, cex=0.5, pch=16, xlab=x.ax, ylab=y.ax, ...){
+plotCytogram <- function(df, x.ax, y.ax, add.legend=FALSE, pop.def=POP.DEF, transform=TRUE, cex=0.5, pch=16, xlab=x.ax, ylab=y.ax, ...){
       
-    plot(df[, x.ax], df[, y.ax], col='grey', pch=pch, cex=cex, xlim=c(0,2^16), ylim=c(0,2^16), xlab=xlab, ylab=ylab, ...)
+    
+    if(transform == T)  	plot(df[, x.ax], df[, y.ax], col='grey', pch=pch, cex=cex, xlim=c(1, 10^3.5), ylim=c(1, 10^3.5), xlab=xlab, ylab=ylab, log='xy')
+    if(transform == F)    	plot(df[, x.ax], df[, y.ax], col='grey', pch=pch, cex=cex, xlim=c(0,2^16), ylim=c(0,2^16), xlab=xlab, ylab=ylab)
 
+	
     if(('pop' %in% names(df))){
       for(p in pop.def$abrev){
         df.p <- subset(df, pop==p)

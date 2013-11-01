@@ -49,7 +49,7 @@ consensusFile <- function(opp.path, pattern = '.[0-9]+-class.vct$', output.path=
   invisible(consensus)
 }
 
-censusFile <- function(opp.path, map.margin=2, output.path=getCruisePath(opp.path), def.path=paste(getCruisePath(opp.path),'pop.def.tab',sep='')){
+censusFile <- function(opp.path, map.margin=2, output.path=getCruisePath(opp.path), def.path=paste(getCruisePath(opp.path),'pop.def.tab',sep=''), transform=TRUE){
   ## opp.path <- paste(REPO.PATH,'/Thompson_0/2009_311/3.evt.opp',sep='')
  
   ######################################################
@@ -77,51 +77,63 @@ censusFile <- function(opp.path, map.margin=2, output.path=getCruisePath(opp.pat
   ##########
   ## PLOT ##
   ##########
-  opp <- readSeaflow(opp.path)
+  opp <- readSeaflow(opp.path, transform=transform)
   opp$pop <- consen.df$pop
   
-
+  
   bitmap(paste(out.path, '.class.gif', sep=''), width=.plot.width, height=3/2*.plot.width)
-
+	
+	if(transform == FALSE){
 	hist1 <- hist(opp$fsc_small, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
 	hist2 <- hist(opp$chl_small, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
 	hist3 <- hist(opp$pe, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
 	hist4 <- hist(opp$chl_big, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
 	hist5 <- hist(opp$fsc_perp, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-
+	}
+	
+	if(transform == TRUE){
+	hist1 <- hist((log10(opp$fsc_small)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
+	hist2 <- hist((log10(opp$chl_small)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
+	hist3 <- hist((log10(opp$pe)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
+	hist4 <- hist((log10(opp$chl_big)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
+	hist5 <- hist((log10(opp$fsc_perp)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
+	}
+	
+	
+	
 	def.par <- par(no.readonly = TRUE) # save default, for resetting...
 	nf <- layout(matrix(c(2,0,5,0,1,3,4,6,8,0,11,0,7,9,10,12,14,0,16,16,13,15,16,16),6,4,byrow=TRUE), c(3,1,3,1,3), c(1,3,1,3,1,3), TRUE)
 	
 	par(mar=c(6,6,1,1))
-	plotCytogram(opp, 'fsc_small', 'chl_small', pop.def=pop.def)
+	plotCytogram(opp, 'fsc_small', 'chl_small', pop.def=pop.def, transform=transform)
 	par(mar=c(0,6,1,1))
 	barplot(hist1$counts, axes=FALSE, space=0, col=NA)
 	par(mar=c(6,0,1,1))
 	barplot(hist2$counts, axes=FALSE, space=0, horiz=TRUE, col=NA)
 
 	par(mar=c(6,6,1,1))
-	plotCytogram(opp, 'fsc_small', 'pe', pop.def=pop.def)
+	plotCytogram(opp, 'fsc_small', 'pe', pop.def=pop.def, transform=transform)
 	par(mar=c(0,6,1,1))
 	barplot(hist1$counts, axes=FALSE, space=0, col=NA)
 	par(mar=c(6,0,1,1))
 	barplot(hist3$counts, axes=FALSE, space=0, horiz=TRUE, col=NA)
 
 	par(mar=c(6,6,1,1))
-	plotCytogram(opp, 'fsc_small', 'chl_big', pop.def=pop.def)
+	plotCytogram(opp, 'fsc_small', 'chl_big', pop.def=pop.def, transform=transform)
 	par(mar=c(0,6,1,1))
 	barplot(hist1$counts, axes=FALSE, space=0, col=NA)
 	par(mar=c(6,0,1,1))
 	barplot(hist4$counts, axes=FALSE, space=0, horiz=TRUE, col=NA)
 
 	par(mar=c(6,6,1,1))
-	plotCytogram(opp, 'chl_small', 'pe', pop.def=pop.def)
+	plotCytogram(opp, 'chl_small', 'pe', pop.def=pop.def, transform=transform)
 	par(mar=c(0,6,1,1))
 	barplot(hist2$counts, axes=FALSE, space=0, col=NA)
 	par(mar=c(6,0,1,1))
 	barplot(hist3$counts, axes=FALSE, space=0, horiz=TRUE, col=NA)
 
 	par(mar=c(6,6,1,1))
-	plotCytogram(opp, 'fsc_small', 'fsc_perp', pop.def=pop.def, add.legend=TRUE)
+	plotCytogram(opp, 'fsc_small', 'fsc_perp', pop.def=pop.def, transform=transform, add.legend=TRUE)
 	par(mar=c(0,6,1,1))
 	barplot(hist1$counts, axes=FALSE, space=0, col=NA)
 	par(mar=c(6,0,1,1))

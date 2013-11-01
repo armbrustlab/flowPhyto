@@ -44,7 +44,7 @@ summarize <- function(x, channel.clmns=CHANNEL.CLMNS, opp.paths.str='1,2,3') {
     
     for(c in channel.clmns){
             if(nrow(xpp) > 2){
-            d <- peaks(density(xpp[,c],from=0, to=2^16, n=2^16))
+            d <- peaks(density(xpp[,c], n=500))
             meta.df[,paste(c,"_mean",sep="")] <- round(mean(xpp[,c], na.rm=T),3)
             meta.df[,paste(c,"_median",sep="")] <- round(median(xpp[,c], na.rm=T),3)
             meta.df[,paste(c,"_sd",sep="")] <- round(sd(xpp[,c], na.rm=T),3)

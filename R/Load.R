@@ -1,4 +1,4 @@
-readSeaflow <- function(file.path, column.names = EVT.HEADER, column.size = 2, count.only=FALSE, add.yearday.file=FALSE){ 
+readSeaflow <- function(file.path, column.names = EVT.HEADER, column.size = 2, count.only=FALSE, transform=TRUE, add.yearday.file=FALSE){ 
 
   if(!(substr(file.path, nchar(file.path)-2, nchar(file.path)) %in% c('opp','evt')))
     warning("attempting to read a seaflow file that doesn't have an evt or opp extension")
@@ -26,7 +26,7 @@ readSeaflow <- function(file.path, column.names = EVT.HEADER, column.size = 2, c
 
     ## check number of events
     if(n.rows != header)
-      stop (paste("ERROR: the predicted number of rows (",n.rows,") doesn't equal the header specified number of events (", header,")",sep=''))
+      stop(paste("ERROR: the predicted number of rows (",n.rows,") doesn't equal the header specified number of events (", header,")",sep=''))
 
     if(count.only){
      return(header) #return just the event count in the header
@@ -41,28 +41,25 @@ readSeaflow <- function(file.path, column.names = EVT.HEADER, column.size = 2, c
       names(integer.dataframe) <- c(column.names)
       close(con) 
       
-            
+      ## Transform data to LOG scale
+      
+      if(transform) integer.dataframe[,EVT.HEADER[-c(1,2)]] <- 10^((integer.dataframe[,EVT.HEADER[-c(1,2)]]/2^16)*3.5)  
+           
+           
+           
       if(add.yearday.file){
               integer.dataframe$file  <- getFileNumber(file.path)
               integer.dataframe$year_day <- .getYearDay(file.path)
       }
       
-      
-      # ## filter out events that have exactly mid range values for all channels   (this is temporary)
-      # is.legit <- apply(integer.dataframe, 1, function(x)  !all(x[c('D1','D2',CHANNEL.CLMNS)] == 2^15))
-      # integer.dataframe <- subset(integer.dataframe, is.legit)
-      
-    # if(count.only){
-       # return(nrow(integer.dataframe)) # temporary until we go back and clean up the original files
-    # }else{
-
+	
       return (integer.dataframe)
     }
   }
 }
 
 
-writeSeaflow <- function(file.path, df, column.names = EVT.HEADER){
+writeSeaflow <- function(file.path, df, column.names = EVT.HEADER, linearize=TRUE){
   if(!all(EVT.HEADER %in% names(df)))
     warning("attempting to read a seaflow file that doesn't have an evt or opp extension")
 
@@ -72,6 +69,9 @@ writeSeaflow <- function(file.path, df, column.names = EVT.HEADER){
   n.bytes.header <- 4
   column.size <- 2
   EOL.double <- 10
+
+	## UNTRANSFORM LOG-SCALED DATA (BACK TO ORIGINAL DATA)
+	if(linearize) df[,EVT.HEADER[-c(1,2)]] <- (log10(df[,EVT.HEADER[-c(1,2)]])/3.5)*2^16
 
   ## open connection ##
   con <- file(description = file.path, open="wb")
