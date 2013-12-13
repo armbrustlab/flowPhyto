@@ -93,7 +93,7 @@ filterFile <- function(evt.path, width=1, notch=1, slope=NA, edge=1, output.path
   third_minute <- path.pieces[[1]][length(path.pieces[[1]])]
 
   message('loading')
-  my.flow.frame <- readSeaflow(evt.path)
+  my.flow.frame <- readSeaflow(evt.path, transform=TRUE)
 
 
   out.evt.file.path <- .createOutputPath(evt.path, output.path)

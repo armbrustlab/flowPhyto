@@ -92,11 +92,11 @@ censusFile <- function(opp.path, map.margin=2, output.path=getCruisePath(opp.pat
 	}
 	
 	if(transform == TRUE){
-	hist1 <- hist((log10(opp$fsc_small)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist2 <- hist((log10(opp$chl_small)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist3 <- hist((log10(opp$pe)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist4 <- hist((log10(opp$chl_big)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist5 <- hist((log10(opp$fsc_perp)/3.5)*2^16, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
+	hist1 <- hist(opp$fsc_small, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
+	hist2 <- hist(opp$chl_small, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
+	hist3 <- hist(opp$pe, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
+	hist4 <- hist(opp$chl_big, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
+	hist5 <- hist(opp$fsc_perp, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
 	}
 	
 	
