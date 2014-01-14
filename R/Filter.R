@@ -7,7 +7,7 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
   slope <- as.numeric(slope)
    
    if(any(max(events[,-c(1,2)]) > 10^3.5)){
-    stop(paste("ERROR,data are not LOG-transform"))
+    stop(paste("ERROR, data are not LOG-transform"))
    }
    
    ##### FILTRING OPP #####
@@ -16,15 +16,12 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
   		inside.stream <- subset(unsaturated,D2 < -D1 + edge*10^3.5*2) # filtering particles at the boundary layer between water/air
 		
 		if(is.na(slope)){
-		  # quart1 <- subset(inside.stream, D1 > as.numeric(quantile(inside.stream[,"D1"], probs= 0.9)))
-		  # quart2 <- subset(inside.stream, D2 > as.numeric(quantile(inside.stream[,"D2"], probs= 0.9)))
-		  # slope <- mean(quart2[,"D2"])/mean(quart1[,"D1"]) # the correction factor for the sensitivity of D1 with respect to D2.			
 		  slope.inside.stream <- subset(inside.stream, D1 > 3.5 & D2 > 3.5) # Exclude potenital electrical noise from calculation.	
-		  slope <- median(slope.inside.stream$D2)/median(slope.inside.stream$D1) 		
+		  slope <- median(slope.inside.stream$D2)/median(slope.inside.stream$D1) 	# the correction factor for the sensitivity of D1 with respect to D2.	
 			}  
   
   		inside.stream[,-c(1,2)] <- (log10(inside.stream[,-c(1,2)])/3.5)*2^16 ## linearize the LOG transformed data
-  		aligned <- subset(inside.stream, D2 > (slope*D1 - width * 10^3.5) & D2 < (slope*D1 + width*10^3.5)) # filtering aligned particles (D1 = D2)
+  		aligned <- subset(inside.stream, D2 > (slope*D1 - width * 10^4) & D2 < (slope*D1 + width*10^4)) # filtering aligned particles (D1 = D2)
 		focused <- subset(aligned, D2/fsc_small > (slope*D1/fsc_small - notch) & D2/fsc_small < (slope*D1/fsc_small + notch))# filtering focused particles (D1/fsc_small = D2/fsc_small)
   		filtered <- subset(focused, D1/fsc_small < notch/slope | D2/fsc_small < notch*slope) # filtering focused particles (D/fsc_small < notch)
   		filtered[,-c(1,2)] <-  10^((filtered[,-c(1,2)]/2^16)*3.5)
@@ -40,15 +37,15 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
     
     plot(events.$D1, events.$D2, xlab="D1", ylab="D2", 
     		pch=20, cex=0.25, xlim=c(1,10^3.5), ylim=c(1,10^3.5), log='xy',
-			col= densCols(events.$D1, events.$D2, colramp=.rainbow.cols),
+			col= densCols(log10(events.$D1), log10(events.$D2), colramp=.rainbow.cols),
 			main="Filtering Aligned Particles")
 	 mtext(paste("only", percent.opp,"% display"), side=3, cex=0.7,col='red')
 	 abline(v=max(events[,"D1"]), h=max(events[,"D2"]), col='red',lwd=2)
 	 abline(v=1, h=1, col='red',lwd=2)
 		 par(new=T)
 	 plot(1,1, xlim=c(0,2^16),ylim=c(0,2^16), bty='n', xaxt='n', yaxt='n', xlab=NA, ylab=NA, pch=NA)
-	 abline(b=slope, a=width*10^3.5, col='red',lwd=2)
-	 abline(b=slope, a=-width*10^3.5, col='red',lwd=2)
+	 abline(b=slope, a=width*10^4, col='red',lwd=2)
+	 abline(b=slope, a=-width*10^4, col='red',lwd=2)
 	 abline(b=-1, a=edge*2^16*2, col='red',lwd=2)
 	
 	mtext(paste("D1/D2=", round(slope,2)),outer=T,side=3, line=-2,font=2)
@@ -60,7 +57,7 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
     para1 <- aligned.$D1/aligned.$fsc_small
     para2 <- aligned.$D2/aligned.$fsc_small
     plot(x = para1,  y = para2, cex=.25, xlim=c(0,2), ylim=c(0,2),
-         xlab='D1/fsc_small', ylab='D2/fsc_small', col = densCols(aligned.$D1/aligned.$fsc_small, aligned.$D2/aligned.$fsc_small,colramp=.rainbow.cols), pch=20, 
+         xlab='D1/fsc_small', ylab='D2/fsc_small', col = densCols(log10(aligned.$D1/aligned.$fsc_small), log10(aligned.$D2/aligned.$fsc_small),colramp=.rainbow.cols), pch=20, 
          main = 'Filtering Focused Particles',pty='s')    
 	 mtext(paste("only", percent.opp,"% display"), side=3, cex=0.7,col='red')
      abline(v=notch/slope, h=notch*slope, col='red',lwd=2)
@@ -69,11 +66,11 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
 		
    plot(filtered$fsc_small, filtered$pe, xlab="fsc_small", ylab="pe", 
     		pch=20, cex=0.25, xlim=c(1,10^3.5), ylim=c(1,10^3.5), log='xy',
-			col= densCols(filtered$fsc_small, filtered$pe, colramp=.rainbow.cols),
+			col= densCols(log10(filtered$fsc_small), log10(filtered$pe), colramp=.rainbow.cols),
 			main=paste("Optimally Positioned Particles\n (",percent.opp,"% total events)"))
    plot(filtered$fsc_small, filtered$chl_small, xlab="fsc_small", ylab="chl_small", 
     		pch=20, cex=0.25, xlim=c(1,10^3.5), ylim=c(1,10^3.5), log='xy',
-			col= densCols(filtered$fsc_small, filtered$chl_small, colramp=.rainbow.cols),
+			col= densCols(log10(filtered$fsc_small), log10(filtered$chl_small), colramp=.rainbow.cols),
 			main=paste("Optimally Positioned Particles\n (",percent.opp,"% total events)"))
 
   }
