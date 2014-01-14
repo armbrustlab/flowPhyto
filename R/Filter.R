@@ -57,7 +57,7 @@ filter <- function(events, width=1, notch=1, slope=NA, edge=1, do.plot=FALSE){
     para1 <- aligned.$D1/aligned.$fsc_small
     para2 <- aligned.$D2/aligned.$fsc_small
     plot(x = para1,  y = para2, cex=.25, xlim=c(0,2), ylim=c(0,2),
-         xlab='D1/fsc_small', ylab='D2/fsc_small', col = densCols(log10(aligned.$D1/aligned.$fsc_small), log10(aligned.$D2/aligned.$fsc_small),colramp=.rainbow.cols), pch=20, 
+         xlab='D1/fsc_small', ylab='D2/fsc_small', col = densCols(aligned.$D1/aligned.$fsc_small, aligned.$D2/aligned.$fsc_small,colramp=.rainbow.cols), pch=20, 
          main = 'Filtering Focused Particles',pty='s')    
 	 mtext(paste("only", percent.opp,"% display"), side=3, cex=0.7,col='red')
      abline(v=notch/slope, h=notch*slope, col='red',lwd=2)
