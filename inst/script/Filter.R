@@ -4,6 +4,6 @@ cmdArgsToVariables()
 
 if(exists('evt.path')){ 
 
-  filterFile(evt.path=evt.path, output.path=output.path, width=width, notch=notch, slope=slope, edge=edge)
+  filterFile(evt.path=evt.path, output.path=output.path, width=width, notch=notch, slope=slope)
   
 }
