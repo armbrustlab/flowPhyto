@@ -7,7 +7,7 @@ run the pipeline
 \usage{
 pipeline(cruise.name='', repo=REPO.PATH, range=NULL, steps=1:4, pct=.97,  
 	clust.concat.ct=3, resample.size=300, resamp.concat.max=10,
-	 filter.width=1.5, filter.notch=1,  filter.slope=NA,
+	 filter.width=1.5, filter.notch=1,  filter.origin=NA,
 	 classify.func =2, classify.varnames=CHANNEL.CLMNS.SM, classify.numc=0, classify.noise=0,
 	 map.margin=2, 
 	concat.sds=!is.na(match(1,steps)), load.to.db=FALSE,  preplot=FALSE, cleanup=TRUE,
@@ -25,7 +25,7 @@ pipeline(cruise.name='', repo=REPO.PATH, range=NULL, steps=1:4, pct=.97,
 \item{resamp.concat.max}{Maximum number of allowable event files to concatenate to generate statistics from.}
 \item{filter.notch}{the location of the x=y (by default) point to create the notch in the gated filter}
 \item{filter.width}{the margin of error for particle alignment determination in the filter step.}
-\item{filter.slope}{correction factor for the stream alignment. When stream is not properly aligned, aligned particles do not scatter light equally on D1 and D2 and therefore do not lie onto the 1:1 line on the scatter plot of D2 vs D1. By default, the value of the slope is calculated as the ratio of D2/D1}
+\item{origin}{correction factor for the stream alignment. When stream is not properly aligned, aligned particles do not scatter light equally on D1 and D2 and must be corrected. By default (NA), the value of the origin is calculated as the difference between the median value of D2 with respect to the median value of D1}
 \item{classify.func}{Choose the clustering method, either flowClust (func = 1) or flowMeans (func = 2, by default) function}
 \item{classify.varnames}{A character vector specifying the variables (columns) to be included in clustering when choosing flowMeans.}
 \item{classify.numc}{Number of clusters when choosing flowMeans. If set to 0 (default) the value matches the number of populations defined in pop.def table . If set to NA, the optimal number of clusters will be estimated automatically.}

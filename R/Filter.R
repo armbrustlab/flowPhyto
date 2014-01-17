@@ -1,9 +1,9 @@
 ##### NEW FUNCTION !!! ####
 
-filter <- function(events, width=1, notch=1, slope=NA, do.plot=FALSE){
+filter <- function(events, width=1, notch=1, origin=NA, do.plot=FALSE){
   notch <- as.numeric(notch)
   width<- as.numeric(width)
-  slope <- as.numeric(slope)
+  origin <- as.numeric(origin)
    
    if(any(max(events[,-c(1,2)]) > 10^3.5)){
     stop(paste("ERROR, data are not LOG-transform"))
@@ -12,22 +12,25 @@ filter <- function(events, width=1, notch=1, slope=NA, do.plot=FALSE){
    ##### FILTRING OPP #####
   		detected <- subset(events, D1 > 1 & D2 > 1) # filtering particles not detected by D1 or D2
   		unsaturated <- subset(detected, D1 < max(events[,"D1"]) & D2 < max(events[,"D1"])) # filtering particles with saturated signals on D1 or D2
-		
-		if(is.na(slope)){
-		  slope.unsaturated <- subset(unsaturated, D1 > 25 & D2 > 25) # Exclude potenital electrical noise from calculation.	
-		  slope <- median(slope.unsaturated$D2/slope.unsaturated$D1) 	# the correction factor for the sensitivity of D1 with respect to D2.	
+		unsaturated[,-c(1,2)] <- (log10(unsaturated[,-c(1,2)])/3.5)*2^16 ## linearize the LOG transformed data
+
+		if(is.na(origin)){
+		  origin.unsaturated <- subset(unsaturated, D1 > 10000 & D2 > 10000) # Exclude potenital electrical noise from calculation.	
+		  origin <- median(origin.unsaturated$D2) - median(origin.unsaturated$D1) 	# Difference of sensitivity between D2 and D1.	
 			}  
-  
-  		unsaturated[,-c(1,2)] <- (log10(unsaturated[,-c(1,2)])/3.5)*2^16 ## linearize the LOG transformed data
-  		aligned <- subset(unsaturated, D2 > (slope*D1 - width * 10^4) & D2 < (slope*D1 + width*10^4)) # filtering aligned particles (D1 = D2)
-		focused <- subset(aligned, D2/fsc_small > (slope*D1/fsc_small - notch) & D2/fsc_small < (slope*D1/fsc_small + notch))# filtering focused particles (D1/fsc_small = D2/fsc_small)
-  		filtered <- subset(focused, D1/fsc_small < notch/slope | D2/fsc_small < notch*slope) # filtering focused particles (D/fsc_small < notch)
+  		# Correction for the difference of sensitivity between D1 and D2
+		if(origin > 0)  unsaturated$D2 <- 	unsaturated$D2 + origin	
+  		if(origin < 0)  unsaturated$D1 <- 	unsaturated$D1 - origin	
+
+  		aligned <- subset(unsaturated, D2 > (D1 - width * 10^4) & D2 < (D1 + width*10^4)) # filtering aligned particles (D1 = D2)
+		focused <- subset(aligned, D2/fsc_small > (D1/fsc_small - notch) & D2/fsc_small < (D1/fsc_small + notch))# filtering focused particles (D1/fsc_small = D2/fsc_small)
+  		filtered <- subset(focused, D1/fsc_small < notch | D2/fsc_small < notch) # filtering focused particles (D/fsc_small < notch)
   		filtered[,-c(1,2)] <-  10^((filtered[,-c(1,2)]/2^16)*3.5)
   		
   ########################
   
   if(do.plot){
-	percent.opp <- round(100*nrow(filtered)/nrow(events))
+	percent.opp <- round(100*nrow(filtered)/nrow(events),1)
 	
 	par(mfrow=c(2,2),pty='s')                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 	
@@ -42,24 +45,23 @@ filter <- function(events, width=1, notch=1, slope=NA, do.plot=FALSE){
 	 abline(v=1, h=1, col='red',lwd=2)
 		 par(new=T)
 	 plot(1,1, xlim=c(0,2^16),ylim=c(0,2^16), bty='n', xaxt='n', yaxt='n', xlab=NA, ylab=NA, pch=NA)
-	 abline(b=slope, a=width*10^4, col='red',lwd=2)
-	 abline(b=slope, a=-width*10^4, col='red',lwd=2)
+	 abline(b=1, a=origin + width*10^4, col='red',lwd=2)
+	 abline(b=1, a=origin -width*10^4, col='red',lwd=2)
 	
-	mtext(paste("D1/D2=", round(slope,2)),outer=T,side=3, line=-2,font=2)
+	mtext(paste("Sensitivity Difference D2 =", round(origin,0)),outer=T,side=3, line=-1.5,font=2)
 	mtext(paste("Width=", width),outer=T,side=3, line=-3,font=2)
 	mtext(paste("Notch=", notch),outer=T,side=3, line=-4,font=2)
 
-	aligned. <- subset(aligned, aligned$D1/aligned$fsc_small<2 & aligned$D2/aligned$fsc_small<2)
-	aligned. <- aligned.[1:round(nrow(filtered)),]
+	aligned. <- subset(aligned, aligned$D1/aligned$fsc_small<2 & aligned$D2/aligned$fsc_small<2)[1:round(nrow(filtered)),]
     para1 <- aligned.$D1/aligned.$fsc_small
     para2 <- aligned.$D2/aligned.$fsc_small
     plot(x = para1,  y = para2, cex=.25, xlim=c(0,2), ylim=c(0,2),
          xlab='D1/fsc_small', ylab='D2/fsc_small', col = densCols(aligned.$D1/aligned.$fsc_small, aligned.$D2/aligned.$fsc_small,colramp=.rainbow.cols), pch=20, 
          main = 'Filtering Focused Particles',pty='s')    
 	 mtext(paste("only", percent.opp,"% display"), side=3, cex=0.7,col='red')
-     abline(v=notch/slope, h=notch*slope, col='red',lwd=2)
-	 abline(b=slope, a=notch, col='red', lwd=2)
-	 abline(b=slope, a=-notch, col='red', lwd=2)
+     abline(v=notch, h=notch, col='red',lwd=2)
+	 abline(b=1, a=notch, col='red', lwd=2)
+	 abline(b=1, a=-notch, col='red', lwd=2)
 		
    plot(filtered$fsc_small, filtered$pe, xlab="fsc_small", ylab="pe", 
     		pch=20, cex=0.25, xlim=c(1,10^3.5), ylim=c(1,10^3.5), log='xy',
@@ -79,7 +81,7 @@ filter <- function(events, width=1, notch=1, slope=NA, do.plot=FALSE){
 
 
 
-filterFile <- function(evt.path, width=1, notch=1, slope=NA, output.path=getCruisePath(evt.path)){
+filterFile <- function(evt.path, width=1, notch=1, origin=NA, output.path=getCruisePath(evt.path)){
 
   path.pieces <- strsplit(evt.path,'/')
   year_day <- path.pieces[[1]][length(path.pieces[[1]])-1]
@@ -101,7 +103,7 @@ filterFile <- function(evt.path, width=1, notch=1, slope=NA, output.path=getCrui
   #par(mar=c(5,5,2,1),oma=c(1,1,1,1),pty='m')
   # plot(1,1,pch='',xlab='',ylab='',xaxt='n',yaxt='n',bty='n')  # TITLE of QUALITY CONTROL PLOt
   
-  filter.frame <- filter(my.flow.frame, width=width, notch=notch, slope=slope, do.plot=TRUE)
+  filter.frame <- filter(my.flow.frame, width=width, notch=notch, origin=origin, do.plot=TRUE)
   n <- nrow(filter.frame)
   message(paste(n, 'events found'))  
 
