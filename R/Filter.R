@@ -1,6 +1,6 @@
 ##### NEW FUNCTION !!! ####
 
-filter <- function(events, width=1, notch=1, origin=NA, do.plot=FALSE){
+filter <- function(events, width=0.5, notch=1, origin=NA, do.plot=FALSE){
   notch <- as.numeric(notch)
   width<- as.numeric(width)
   origin <- as.numeric(origin)
@@ -81,7 +81,7 @@ filter <- function(events, width=1, notch=1, origin=NA, do.plot=FALSE){
 
 
 
-filterFile <- function(evt.path, width=1, notch=1, origin=NA, output.path=getCruisePath(evt.path)){
+filterFile <- function(evt.path, width=0.5, notch=1, origin=NA, output.path=getCruisePath(evt.path)){
 
   path.pieces <- strsplit(evt.path,'/')
   year_day <- path.pieces[[1]][length(path.pieces[[1]])-1]

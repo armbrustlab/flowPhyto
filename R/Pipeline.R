@@ -70,7 +70,7 @@ clearOutputs <- function(cruise.path='.', steps=1:4){
   return(TRUE)
 }
 
-.processRawData <- function(cruise.dir='.', steps = 1:3, transform=TRUE, clust.concat.ct=3, filter.width=1.5, filter.notch=1, filter.origin=NA, classify.varnames=CHANNEL.CLMNS.SM, classify.func= 2, classify.numc=0, classify.noise=0, map.margin=2, output.path='.', log.dir='.', def.path=NULL, debug=FALSE, fresh=TRUE, cleanup=TRUE, pct=.97, parallel=FALSE, submit.cmd='qsub', range=NULL){
+.processRawData <- function(cruise.dir='.', steps = 1:3, transform=TRUE, clust.concat.ct=3, filter.width=0.5, filter.notch=1, filter.origin=NA, classify.varnames=CHANNEL.CLMNS.SM, classify.func= 2, classify.numc=0, classify.noise=0, map.margin=2, output.path='.', log.dir='.', def.path=NULL, debug=FALSE, fresh=TRUE, cleanup=TRUE, pct=.97, parallel=FALSE, submit.cmd='qsub', range=NULL){
   
   
   if(length(steps)>3 | 4 %in% steps)
@@ -79,7 +79,7 @@ clearOutputs <- function(cruise.path='.', steps=1:4){
     script.names <- c('Filter','Classify','Census')
     suffixes <- c('evt','opp','opp')
     complete.fold <- c(1, clust.concat.ct, 1)
-    add.opts <- paste('--map.margin=', map.margin,' --concat.ct=', clust.concat.ct,' --def.path=', def.path,'--transform=', transform, ' --width=', filter.width,' --notch=', filter.notch, ' --origin=', filter.origin, ' --func=',classify.func, ' --varnames=', paste(classify.varnames, collapse=','), ' --numc=', classify.numc, ' --noise=', classify.noise, sep='')
+    add.opts <- paste('--map.margin=', map.margin,' --concat.ct=', clust.concat.ct,' --def.path=', def.path,' --transform=', transform, ' --width=', filter.width,' --notch=', filter.notch, ' --origin=', filter.origin, ' --func=',classify.func, ' --varnames=', paste(classify.varnames, collapse=','), ' --numc=', classify.numc, ' --noise=', classify.noise, sep='')
     
 
     
@@ -176,7 +176,7 @@ clearOutputs <- function(cruise.path='.', steps=1:4){
 
 pipeline  <- function(cruise.name='', repo=REPO.PATH, range=NULL, steps=1:4, pct=.97,  
 	transform=TRUE, clust.concat.ct=3, resample.size=300, resamp.concat.max=10,
-	filter.width=1.5, filter.notch=1, filter.origin=NA,
+	filter.width=0.5, filter.notch=1, filter.origin=NA,
 	classify.func=2, classify.varnames=CHANNEL.CLMNS.SM, classify.numc=0, classify.noise=0,
 	map.margin=2, concat.sds=!is.na(match(1,steps)), load.to.db=FALSE,  preplot=FALSE, cleanup=TRUE,
 	input.path=paste(repo, '/', cruise.name, sep=''),

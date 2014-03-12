@@ -1,7 +1,7 @@
 
-.rainbow.cols <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow","#FF7F00", "red", "#7F0000"))
+.rainbow.cols <- colorRampPalette(c("blue4","royalblue4","deepskyblue3", "seagreen3", "yellow", "orangered2","darkred"))
 
-REPO.PATH <- '/share/data/cruise/instrument/underway/seaflow/'
+REPO.PATH <- '/misc/seaflow'
 
 ## CMOP ONLY
 .EVT.HEADER.V1 <- c("time","pulse_width","D1","D2",
