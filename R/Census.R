@@ -83,22 +83,16 @@ censusFile <- function(opp.path, map.margin=2, output.path=getCruisePath(opp.pat
   
   bitmap(paste(out.path, '.class.gif', sep=''), width=.plot.width, height=3/2*.plot.width)
 	
-	if(transform == FALSE){
-	hist1 <- hist(opp$fsc_small, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist2 <- hist(opp$chl_small, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist3 <- hist(opp$pe, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist4 <- hist(opp$chl_big, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	hist5 <- hist(opp$fsc_perp, breaks=seq(0,2^16, by=2^16/25), plot=FALSE)
-	}
+	if(transform == FALSE)	breaks <- seq(0,2^16, by=2^16/25) # linear - spaced grid
+		
+	if(transform == TRUE)	breaks <- 10^((0:24)*3.5/24)	# log - spaced grid
 	
-	if(transform == TRUE){
-	hist1 <- hist(opp$fsc_small, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
-	hist2 <- hist(opp$chl_small, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
-	hist3 <- hist(opp$pe, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
-	hist4 <- hist(opp$chl_big, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
-	hist5 <- hist(opp$fsc_perp, breaks=seq(1,10^3.5, by=10^3.5/25), plot=FALSE)
-	}
-	
+	hist1 <- hist(opp$fsc_small, breaks=breaks, plot=FALSE)
+	hist2 <- hist(opp$chl_small, breaks=breaks, plot=FALSE)
+	hist3 <- hist(opp$pe, breaks=breaks, plot=FALSE)
+	hist4 <- hist(opp$chl_big, breaks=breaks, plot=FALSE)
+	hist5 <- hist(opp$fsc_perp, breaks=breaks, plot=FALSE)
+
 	
 	
 	def.par <- par(no.readonly = TRUE) # save default, for resetting...

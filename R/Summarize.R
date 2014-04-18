@@ -7,7 +7,7 @@ summarize <- function(x, channel.clmns=CHANNEL.CLMNS, opp.paths.str='1,2,3') {
   reqd.present <- reqd.clmns %in% names(x)
   if(!all(reqd.present))
     stop(paste('you are missing one ore more of the required sds/log or pop columns. Namely: ',paste(reqd.clmns[!reqd.present],collapse=',')))
-  file.ct <- length(strsplit(opp.paths.str,',')[[1]])
+  file.ct <- 1 #length(strsplit(opp.paths.str,',')[[1]])
   
   time.diff <- 3 * file.ct  # 3 minute per file approximation for now!
 
@@ -34,25 +34,20 @@ summarize <- function(x, channel.clmns=CHANNEL.CLMNS, opp.paths.str='1,2,3') {
 	      temperature = round(mean(xpp$temperature, na.rm=TRUE), 3),
 	      event_rate = round(mean(xpp$event.rate, na.rm=TRUE), 3),
 	      fluorescence = round(mean(xpp$fluorescence, na.rm=TRUE), 3),
-          opp.vol.correction = round(mean(xpp$opp/xpp$evt, na.rm=TRUE),3),
           evt = round(mean(xpp$evt, na.rm=TRUE),2),
           opp = round(mean(xpp$opp, na.rm=TRUE),2),
 	      n = nrow(xpp)	    
 	   )
-    meta.df$conc <- with(meta.df, round(n/(flow * time.diff * opp.vol.correction),4))  # ~Vol/100 correction for OPP filtration
+    meta.df$conc <- with(meta.df, round(n/(flow * time.diff * opp / evt),4))  # ~Vol/100 correction for OPP filtration
     meta.df$opp.vol.correction <- NULL
     
     for(c in channel.clmns){
             if(nrow(xpp) > 2){
-            d <- peaks(density(xpp[,c], n=500))
             meta.df[,paste(c,"_mean",sep="")] <- round(mean(xpp[,c], na.rm=T),3)
             meta.df[,paste(c,"_median",sep="")] <- round(median(xpp[,c], na.rm=T),3)
             meta.df[,paste(c,"_sd",sep="")] <- round(sd(xpp[,c], na.rm=T),3)
-            meta.df[,paste(c,"_mode",sep="")] <- round(max(d$x),3)
-            meta.df[,paste(c,"_width",sep="")] <- round(d[which(d$x == max(d$x)),"w"],3)
-            meta.df[,paste(c,"_npeaks",sep="")] <- nrow(d)  
-                }else{
-            meta.df[,paste(c,"_mean",sep="")] <- meta.df[,paste(c,"_median",sep="")] <- meta.df[,paste(c,"_sd",sep="")] <- meta.df[,paste(c,"_mode",sep="")] <- meta.df[,paste(c,"_width",sep="")] <- meta.df[,paste(c,"_npeaks",sep="")] <- NA 
+                  }else{
+            meta.df[,paste(c,"_mean",sep="")] <- meta.df[,paste(c,"_median",sep="")] <- meta.df[,paste(c,"_sd",sep="")] <- NA 
                }
             }
  
