@@ -19,8 +19,8 @@ filter <- function(events, width=0.5, notch=1, origin=NA, do.plot=FALSE){
 		  origin <- median(origin.unsaturated$D2) - median(origin.unsaturated$D1) 	# Difference of sensitivity between D2 and D1.	
 			}  
   		# Correction for the difference of sensitivity between D1 and D2
-		if(origin > 0)  unsaturated$D2 <- 	unsaturated$D2 + origin	
-  		if(origin < 0)  unsaturated$D1 <- 	unsaturated$D1 - origin	
+		if(origin > 0)  unsaturated$D2 <- 	unsaturated$D2 - origin
+  		if(origin < 0)  unsaturated$D1 <- 	unsaturated$D1 + origin	
 
   		aligned <- subset(unsaturated, D2 > (D1 - width * 10^4) & D2 < (D1 + width*10^4)) # filtering aligned particles (D1 = D2)
 		focused <- subset(aligned, D2/fsc_small > (D1/fsc_small - notch) & D2/fsc_small < (D1/fsc_small + notch))# filtering focused particles (D1/fsc_small = D2/fsc_small)
