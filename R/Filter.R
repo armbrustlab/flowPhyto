@@ -47,7 +47,9 @@ filter <- function(events, width=0.5, notch=1, origin=NA, do.plot=FALSE){
 	 plot(1,1, xlim=c(0,2^16),ylim=c(0,2^16), bty='n', xaxt='n', yaxt='n', xlab=NA, ylab=NA, pch=NA)
 	 abline(b=1, a=origin + width*10^4, col='red',lwd=2)
 	 abline(b=1, a=origin -width*10^4, col='red',lwd=2)
-	
+	  # points(seq(0,2^16,length.out=100), (seq(0,2^16,length.out=100) + width*10^4)+1.00018^(seq(0,2^16,length.out=100) + width*10^4), col='red',lwd=2)
+   #  points(seq(0,2^16,length.out=100), (seq(0,2^16,length.out=100) - width*10^4)-1.00018^(seq(0,2^16,length.out=100) - width*10^4), col='red',lwd=2)
+
 	mtext(paste("Sensitivity Difference D2 =", round(origin,0)),outer=T,side=3, line=-1.5,font=2)
 	mtext(paste("Width=", width),outer=T,side=3, line=-3,font=2)
 	mtext(paste("Notch=", notch),outer=T,side=3, line=-4,font=2)
